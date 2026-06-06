@@ -13,7 +13,7 @@ export const PROXY_URL =
  * Flip to false to use the real GAS proxy.
  * When true the app runs entirely on the inline mock dataset below.
  */
-export const USE_MOCK = true;
+export const USE_MOCK = false;
 
 // ---------------------------------------------------------------------------
 // Inline mock dataset in raw URA shape (so normalizeBatch applies directly).
