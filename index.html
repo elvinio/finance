@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Explore Singapore private residential condo transactions on an interactive map." />
+    <meta name="theme-color" content="#2c3e6b" />
+
+    <title>SG Condo Explorer</title>
+
+    <!-- PWA manifest -->
+    <link rel="manifest" href="manifest.webmanifest" />
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Leaflet CSS (pinned to 1.9.4) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+
+    <!-- Leaflet.markercluster CSS (pinned to 1.5.3) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+      crossorigin=""
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+      crossorigin=""
+    />
+
+    <!--
+      Import map: map bare specifiers used in ES modules to pinned CDN URLs.
+
+      - proj4@2.11.0          — SVY21→WGS84 coordinate conversion
+      - leaflet@1.9.4         — interactive map library
+      - leaflet.markercluster — cluster plugin (side-effect import)
+
+      esm.sh serves proper ES module builds.
+      The proj4 default export is the proj4 function itself.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "proj4": "https://esm.sh/proj4@2.11.0",
+          "leaflet": "https://esm.sh/leaflet@1.9.4",
+          "leaflet.markercluster": "https://esm.sh/leaflet.markercluster@1.5.3"
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="app">
+
+      <!-- Top progress bar (shown while batches load) -->
+      <div id="progress" class="hidden" role="progressbar" aria-label="Loading data">
+        <div id="progress-fill"></div>
+        <span id="progress-label"></span>
+      </div>
+
+      <!-- Staleness / offline banner -->
+      <div id="banner" class="hidden" role="alert" aria-live="polite"></div>
+
+      <!-- Collapsible filter bar -->
+      <nav id="filters" aria-label="Transaction filters">
+        <button
+          id="filters-toggle"
+          type="button"
+          aria-expanded="true"
+          aria-controls="filters-body"
+        >
+          Hide Filters
+        </button>
+        <div id="filters-body" aria-live="polite">
+          <!-- Populated dynamically by main.js once data is loaded -->
+          <p style="color:#888;font-size:0.85rem;padding:4px 0;">Loading filters…</p>
+        </div>
+      </nav>
+
+      <!-- Main content: map + table side-by-side on wide screens -->
+      <div id="main-content">
+
+        <!-- Leaflet map -->
+        <div id="map" role="region" aria-label="Property map"></div>
+
+        <!-- Transaction table (hidden until a project is tapped) -->
+        <div id="table" class="hidden" role="region" aria-label="Transaction details" aria-live="polite"></div>
+
+      </div><!-- /#main-content -->
+
+    </div><!-- /#app -->
+
+    <!-- App entry point (ES module; import-map resolves bare specifiers above) -->
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,382 @@
+/* ============================================================
+   Singapore Condo Property Explorer — Mobile-first styles
+   ============================================================ */
+
+/* ---- Reset / base ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #1a1a2e;
+  background: #f4f6f9;
+}
+
+/* ---- Layout shell ---- */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh; /* use dvh for mobile browser chrome */
+  overflow: hidden;
+}
+
+/* ---- Progress bar ---- */
+#progress {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background: #dce3ec;
+  z-index: 1000;
+  flex-shrink: 0;
+}
+
+#progress.hidden {
+  display: none;
+}
+
+#progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #2980b9;
+  transition: width 0.3s ease;
+}
+
+#progress-label {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: #555;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ---- Staleness banner ---- */
+#banner {
+  background: #fff3cd;
+  color: #856404;
+  border-bottom: 1px solid #ffc107;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+#banner.hidden {
+  display: none;
+}
+
+/* ---- Filter bar ---- */
+#filters {
+  background: #ffffff;
+  border-bottom: 1px solid #dce3ec;
+  flex-shrink: 0;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+#filters-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px;
+  background: #2c3e6b;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  min-height: 44px; /* touch target */
+  text-align: left;
+}
+
+#filters-toggle:focus-visible {
+  outline: 3px solid #4fa3e0;
+  outline-offset: -3px;
+}
+
+#filters-body {
+  padding: 12px 16px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+#filters-body.hidden {
+  display: none;
+}
+
+/* ---- Filter groups ---- */
+.filter-group {
+  border: none;
+  min-width: 140px;
+  flex: 1 1 140px;
+}
+
+.filter-group legend,
+.filter-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  padding: 3px 0;
+  cursor: pointer;
+  min-height: 28px; /* touch-friendly */
+}
+
+.filter-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #2c3e6b;
+}
+
+/* ---- Date / PSF range inputs ---- */
+.filter-date-row,
+.filter-psf-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  flex: 1 1 120px;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid #c8d0dc;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #1a1a2e;
+  background: #f9fafb;
+  min-height: 38px; /* touch-friendly */
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: #2980b9;
+  background: #fff;
+}
+
+/* ---- Reset button ---- */
+.btn-reset {
+  align-self: flex-end;
+  padding: 8px 18px;
+  border: 1px solid #c8d0dc;
+  border-radius: 4px;
+  background: #f9fafb;
+  color: #444;
+  font-size: 0.875rem;
+  cursor: pointer;
+  min-height: 38px;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-reset:hover,
+.btn-reset:focus-visible {
+  background: #e8edf4;
+  border-color: #2c3e6b;
+  outline: none;
+}
+
+/* ---- Map ---- */
+#map {
+  flex: 1 1 0;
+  min-height: 200px;
+  z-index: 1;
+}
+
+/* ---- Transaction table panel ---- */
+#table {
+  flex-shrink: 0;
+  max-height: 45vh;
+  overflow-y: auto;
+  background: #fff;
+  border-top: 2px solid #2c3e6b;
+  -webkit-overflow-scrolling: touch;
+}
+
+#table.hidden {
+  display: none;
+}
+
+/* ---- Table header (project name / meta) ---- */
+.table-header {
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 10;
+}
+
+.table-project-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-project-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.badge-segment {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #e8edf4;
+  color: #2c3e6b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---- Sortable table ---- */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.txn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.txn-table th,
+.txn-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+
+.txn-table th {
+  position: sticky;
+  top: 0;
+  background: #f4f6f9;
+  font-weight: 700;
+  color: #2c3e6b;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  user-select: none;
+  z-index: 5;
+}
+
+.txn-table th.sortable:hover {
+  background: #e2e8f4;
+}
+
+.txn-table th.sort-asc::after {
+  content: " \25B2"; /* ▲ */
+  font-size: 0.65em;
+  vertical-align: middle;
+  color: #2980b9;
+}
+
+.txn-table th.sort-desc::after {
+  content: " \25BC"; /* ▼ */
+  font-size: 0.65em;
+  vertical-align: middle;
+  color: #2980b9;
+}
+
+.txn-table tbody tr:hover {
+  background: #f0f5fb;
+}
+
+.txn-table td {
+  color: #333;
+}
+
+/* ---- Table footer text ---- */
+.table-count {
+  padding: 6px 16px 10px;
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.table-empty {
+  padding: 20px 16px;
+  color: #888;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* ---- Utility ---- */
+.hidden {
+  display: none !important;
+}
+
+/* ---- Leaflet overrides ---- */
+.leaflet-container {
+  font-family: inherit;
+}
+
+/* ---- Desktop breakpoint (>= 768px) ---- */
+@media (min-width: 768px) {
+  #app {
+    flex-direction: column;
+  }
+
+  #map {
+    flex: 1 1 0;
+  }
+
+  #table {
+    max-height: 35vh;
+  }
+
+  .txn-table {
+    font-size: 0.875rem;
+  }
+}
+
+/* ---- Large screen (>= 1024px): side-by-side layout ---- */
+@media (min-width: 1024px) {
+  #main-content {
+    display: flex;
+    flex: 1 1 0;
+    overflow: hidden;
+  }
+
+  #map {
+    flex: 1 1 0;
+  }
+
+  #table {
+    flex: 0 0 420px;
+    max-height: none;
+    border-top: none;
+    border-left: 2px solid #2c3e6b;
+    overflow-y: auto;
+  }
+}

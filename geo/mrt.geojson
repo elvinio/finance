@@ -1,0 +1,65 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.8518, 1.2830] },
+      "properties": { "name": "Raffles Place", "line": "EWL/NSL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.8520, 1.2931] },
+      "properties": { "name": "City Hall", "line": "EWL/NSL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.8321, 1.3040] },
+      "properties": { "name": "Orchard", "line": "NSL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.8456, 1.2990] },
+      "properties": { "name": "Dhoby Ghaut", "line": "NSL/NEL/CCL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.7424, 1.3329] },
+      "properties": { "name": "Jurong East", "line": "EWL/NSL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.8485, 1.3510] },
+      "properties": { "name": "Bishan", "line": "NSL/CCL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.9032, 1.3001] },
+      "properties": { "name": "Bugis", "line": "EWL/DTL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.9456, 1.3527] },
+      "properties": { "name": "Tampines", "line": "EWL/DTL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.7868, 1.4370] },
+      "properties": { "name": "Woodlands", "line": "NSL/TEL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.8215, 1.2654] },
+      "properties": { "name": "HarbourFront", "line": "NEL/CCL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.8949, 1.3197] },
+      "properties": { "name": "Serangoon", "line": "NEL/CCL" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [103.8894, 1.3764] },
+      "properties": { "name": "Hougang", "line": "NEL" }
+    }
+  ]
+}
