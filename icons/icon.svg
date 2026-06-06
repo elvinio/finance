@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="SG Condo">
+  <rect width="512" height="512" fill="#1a5f3f"/>
+  <!-- glyph kept within the central ~80% maskable safe zone -->
+  <g transform="translate(256 256)">
+    <!-- house / building roof -->
+    <path d="M -110 -10 L 0 -110 L 110 -10 Z" fill="#ffffff"/>
+    <!-- building body -->
+    <rect x="-90" y="-10" width="180" height="130" rx="8" fill="#ffffff"/>
+    <!-- windows -->
+    <g fill="#1a5f3f">
+      <rect x="-66" y="14" width="34" height="34" rx="4"/>
+      <rect x="-17" y="14" width="34" height="34" rx="4"/>
+      <rect x="32" y="14" width="34" height="34" rx="4"/>
+      <rect x="-66" y="64" width="34" height="34" rx="4"/>
+      <rect x="32" y="64" width="34" height="34" rx="4"/>
+      <!-- door -->
+      <rect x="-17" y="64" width="34" height="56" rx="4"/>
+    </g>
+  </g>
+</svg>

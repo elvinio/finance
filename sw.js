@@ -22,8 +22,7 @@ const APP_SHELL = [
   "./src/lib/svy21.js",
   "./src/lib/transactions.js",
   "./src/lib/uraClient.js",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
+  "./icons/icon.svg",
   "./geo/mrt.geojson",
 ];
 
