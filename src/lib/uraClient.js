@@ -7,7 +7,7 @@ import { computePsf, parseContractDate, median } from "./transactions.js";
 
 /** GAS proxy URL — replace REPLACE_WITH_YOUR_DEPLOYMENT_ID with your actual deployment ID. */
 export const PROXY_URL =
-  "https://script.google.com/macros/s/REPLACE_WITH_YOUR_DEPLOYMENT_ID/exec";
+  "https://script.google.com/macros/s/AKfycbwJK8mtfYM_PBZq2bYWtGhEcMP7ic3szrMzyGn3qAky_0u_lZynrgsPnOq0McjWWfcQOg/exec";
 
 /**
  * Flip to false to use the real GAS proxy.
