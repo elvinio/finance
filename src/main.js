@@ -5,16 +5,37 @@
 
 import { initMap, createClusterGroup, renderProjects, onProjectTap } from "./map.js";
 import { renderTable } from "./table.js";
-import { loadAllProjects } from "./lib/uraClient.js";
+import { loadAllProjects, USE_MOCK } from "./lib/uraClient.js";
 import { makeFilterPredicate } from "./lib/transactions.js";
+import { initDebugPanel, debugLog, debugSetStatus } from "./debug.js";
+
+// ---------------------------------------------------------------------------
+// Debug panel (init before anything else so early logs are captured)
+// ---------------------------------------------------------------------------
+initDebugPanel();
+debugSetStatus("Mode", USE_MOCK ? "Mock" : "Live", USE_MOCK ? "warn" : "info");
+debugSetStatus("SW", "Registering…", "neutral");
+debugSetStatus("Cache", "—", "neutral");
+debugSetStatus("Data", "—", "neutral");
+debugLog("App initialising…", "step");
 
 // ---------------------------------------------------------------------------
 // Service Worker registration
 // ---------------------------------------------------------------------------
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js").catch((err) => {
-    console.warn("Service worker registration failed:", err);
-  });
+  navigator.serviceWorker.register("./sw.js")
+    .then(() => {
+      debugSetStatus("SW", "Active", "success");
+      debugLog("Service worker registered", "success");
+    })
+    .catch((err) => {
+      debugSetStatus("SW", "Failed", "error");
+      debugLog(`Service worker registration failed: ${err.message}`, "error");
+      console.warn("Service worker registration failed:", err);
+    });
+} else {
+  debugSetStatus("SW", "Unsupported", "warn");
+  debugLog("Service workers not supported in this browser", "warn");
 }
 
 // ---------------------------------------------------------------------------
@@ -333,24 +354,44 @@ onProjectTap((project) => {
 // ---------------------------------------------------------------------------
 (async () => {
   showProgress(0, 4);
+  debugLog("Starting data load…", "step");
 
   const result = await loadAllProjects({
     onBatch(projectsSoFar, done, total) {
       showProgress(done, total);
+      const txnCount = projectsSoFar.reduce((s, p) => s + p.transactions.length, 0);
+      debugSetStatus("Data", `${projectsSoFar.length} projects, ${txnCount} txns`, "info");
       // Render incrementally as batches arrive.
       const visible = applyProjectFilter(projectsSoFar);
       renderProjects(map, clusterGroup, visible);
+    },
+    onLog(msg, type) {
+      debugLog(msg, type);
+      // Mirror cache status into the status card.
+      if (msg.startsWith("Cache hit"))    debugSetStatus("Cache", "Hit",     "success");
+      if (msg.startsWith("Cache miss"))   debugSetStatus("Cache", "Miss",    "warn");
+      if (msg.startsWith("Cache expire")) debugSetStatus("Cache", "Expired", "warn");
+      if (msg.startsWith("IndexedDB read error")) debugSetStatus("Cache", "Error", "error");
+      if (msg.startsWith("Falling back")) debugSetStatus("Cache", "Stale",   "warn");
+      if (msg.startsWith("Mock mode"))    debugSetStatus("Cache", "N/A (mock)", "neutral");
     },
   });
 
   _allProjects = result.projects;
   hideProgress();
 
+  // Final tally.
+  const totalTxns = _allProjects.reduce((s, p) => s + p.transactions.length, 0);
+  debugSetStatus("Data", `${_allProjects.length} projects, ${totalTxns} txns`, "success");
+  debugSetStatus("Fetched", new Date(result.fetchedAt).toLocaleTimeString("en-SG", { hour12: false }), "neutral");
+  debugLog(`Load complete — ${_allProjects.length} projects, ${totalTxns} transactions`, "success");
+
   // Final render with full dataset.
   applyFilters();
 
   // Build filter bar now that we have data.
   buildFilterBar();
+  debugLog("Filter bar built", "info");
 
   // Staleness banner.
   if (result.stale) {
@@ -360,5 +401,6 @@ onProjectTap((project) => {
       timeStyle: "short",
     });
     showBanner(`Showing cached data from ${fmt}. Could not reach the server.`);
+    debugSetStatus("Cache", "Stale", "warn");
   }
 })();

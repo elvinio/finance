@@ -95,6 +95,22 @@
 
     </div><!-- /#app -->
 
+    <!-- Troubleshooting: floating button + slide-up panel -->
+    <button id="debug-fab" aria-label="Open troubleshooting panel" aria-pressed="false" title="Troubleshooting">⚙</button>
+    <div id="debug-panel" class="hidden" role="complementary" aria-label="Troubleshooting panel">
+      <div id="debug-header">
+        <span>Troubleshooting</span>
+        <div class="debug-header-actions">
+          <button id="debug-clear">Clear log</button>
+          <button id="debug-close" aria-label="Close panel">✕</button>
+        </div>
+      </div>
+      <div id="debug-status-grid"></div>
+      <div id="debug-log-wrap">
+        <ul id="debug-log"></ul>
+      </div>
+    </div>
+
     <!-- App entry point (ES module; import-map resolves bare specifiers above) -->
     <script type="module" src="src/main.js"></script>
   </body>

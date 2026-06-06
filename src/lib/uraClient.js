@@ -430,18 +430,23 @@ let _lastFetchedAt = null;
  * @param {{ onBatch?: Function, forceRefresh?: boolean }} [options]
  * @returns {Promise<{ projects: object[], fetchedAt: number, stale: boolean }>}
  */
-export async function loadAllProjects({ onBatch, forceRefresh = false } = {}) {
+export async function loadAllProjects({ onBatch, onLog, forceRefresh = false } = {}) {
   const notify = typeof onBatch === "function" ? onBatch : () => {};
+  const log    = typeof onLog  === "function" ? onLog  : () => {};
 
   // ---- Mock path ----
   if (USE_MOCK) {
+    log("Mock mode active — using inline dataset (USE_MOCK=true)", "warn");
     const projects = normalizeBatch(MOCK_RAW);
     _lastFetchedAt = Date.now();
+    const txnCount = projects.reduce((s, p) => s + p.transactions.length, 0);
+    log(`Mock data ready: ${projects.length} projects, ${txnCount} transactions`, "success");
     notify(projects, 1, 1);
     return { projects, fetchedAt: _lastFetchedAt, stale: false };
   }
 
   // ---- Live path ----
+  log("Live mode — checking IndexedDB cache…", "step");
 
   // Try IndexedDB cache first (unless forceRefresh).
   if (!forceRefresh) {
@@ -450,12 +455,23 @@ export async function loadAllProjects({ onBatch, forceRefresh = false } = {}) {
       if (cached && cached.fetchedAt && Date.now() - cached.fetchedAt < CACHE_TTL_MS) {
         _lastFetchedAt = cached.fetchedAt;
         const projects = cached.projects;
+        const ageMin = Math.round((Date.now() - cached.fetchedAt) / 60000);
+        const ageStr = ageMin < 60 ? `${ageMin}m` : `${Math.round(ageMin / 60)}h`;
+        const txnCount = projects.reduce((s, p) => s + p.transactions.length, 0);
+        log(`Cache hit — data is ${ageStr} old (${projects.length} projects, ${txnCount} txns)`, "success");
         notify(projects, 1, 1);
         return { projects, fetchedAt: cached.fetchedAt, stale: false };
+      } else if (cached && cached.fetchedAt) {
+        const ageH = Math.round((Date.now() - cached.fetchedAt) / 3600000);
+        log(`Cache expired — data is ${ageH}h old (threshold: 48h); fetching fresh`, "warn");
+      } else {
+        log("Cache miss — no data in IndexedDB; fetching from proxy", "info");
       }
-    } catch (_err) {
-      // IndexedDB unavailable; fall through to network fetch.
+    } catch (idbErr) {
+      log(`IndexedDB read error: ${idbErr.message}`, "error");
     }
+  } else {
+    log("Force-refresh requested — bypassing cache", "warn");
   }
 
   // Fetch all 4 batches in parallel; normalise and report incrementally.
@@ -466,12 +482,17 @@ export async function loadAllProjects({ onBatch, forceRefresh = false } = {}) {
   try {
     const fetchBatch = async (n) => {
       const url = `${PROXY_URL}?service=PMI_Resi_Transaction&batch=${n}`;
+      log(`Batch ${n}: fetching from proxy…`, "step");
+      const t0  = Date.now();
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Batch ${n} HTTP ${res.status}`);
       const json = await res.json();
       // URA response shape: { Status: "Success", Result: [...] }
       const result = json.Result || json.result || json;
       const batchProjects = normalizeBatch(Array.isArray(result) ? result : []);
+      const elapsed = Date.now() - t0;
+      const txns = batchProjects.reduce((s, p) => s + p.transactions.length, 0);
+      log(`Batch ${n}: ${batchProjects.length} projects, ${txns} transactions (${elapsed}ms)`, "success");
       allProjects.push(...batchProjects);
       completed += 1;
       notify([...allProjects], completed, BATCH_COUNT);
@@ -485,15 +506,20 @@ export async function loadAllProjects({ onBatch, forceRefresh = false } = {}) {
     const fetchedAt = Date.now();
     _lastFetchedAt = fetchedAt;
 
+    const totalTxns = allProjects.reduce((s, p) => s + p.transactions.length, 0);
+    log(`All batches done — ${allProjects.length} projects, ${totalTxns} transactions total`, "success");
+
     // Persist to IndexedDB.
     try {
       await idbSet("data", { fetchedAt, projects: allProjects });
-    } catch (_err) {
-      // Storage failure is non-fatal.
+      log("Data persisted to IndexedDB (TTL: 48h)", "info");
+    } catch (idbErr) {
+      log(`IndexedDB write failed (non-fatal): ${idbErr.message}`, "warn");
     }
 
     return { projects: allProjects, fetchedAt, stale: false };
   } catch (networkErr) {
+    log(`Network fetch failed: ${networkErr.message}`, "error");
     console.warn("Network fetch failed; falling back to IndexedDB cache.", networkErr);
 
     // Fall back to stale cache on network error.
@@ -501,11 +527,13 @@ export async function loadAllProjects({ onBatch, forceRefresh = false } = {}) {
       const cached = await idbGet("data");
       if (cached && cached.projects) {
         _lastFetchedAt = cached.fetchedAt;
+        const ageH = Math.round((Date.now() - cached.fetchedAt) / 3600000);
+        log(`Falling back to stale cache — data is ${ageH}h old`, "warn");
         notify(cached.projects, 1, 1);
         return { projects: cached.projects, fetchedAt: cached.fetchedAt, stale: true };
       }
     } catch (_err) {
-      // Nothing in cache either.
+      log("Stale cache also unavailable — no data to display", "error");
     }
 
     // Total failure — return empty.
