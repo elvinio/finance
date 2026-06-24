@@ -82,8 +82,14 @@
         </div>
       </nav>
 
-      <!-- Main content: map + table side-by-side on wide screens -->
-      <div id="main-content">
+      <!-- Tab bar -->
+      <nav id="tab-bar" role="tablist" aria-label="View">
+        <button id="tab-map" class="tab-btn" role="tab" aria-selected="true" aria-controls="map-panel">Map</button>
+        <button id="tab-rain" class="tab-btn" role="tab" aria-selected="false" aria-controls="rain-panel">Rain</button>
+      </nav>
+
+      <!-- Map tab panel: map + table side-by-side on wide screens -->
+      <div id="map-panel" role="tabpanel" aria-labelledby="tab-map">
 
         <!-- Leaflet map -->
         <div id="map" role="region" aria-label="Property map"></div>
@@ -91,7 +97,26 @@
         <!-- Transaction table (hidden until a project is tapped) -->
         <div id="table" class="hidden" role="region" aria-label="Transaction details" aria-live="polite"></div>
 
-      </div><!-- /#main-content -->
+      </div><!-- /#map-panel -->
+
+      <!-- Rain tab panel -->
+      <div id="rain-panel" class="hidden" role="tabpanel" aria-labelledby="tab-rain">
+
+        <!-- Time-period pill bar -->
+        <div id="rain-controls">
+          <div id="rain-pills" role="group" aria-label="Time period">
+            <button class="rain-pill active" data-hours="1">1h</button>
+            <button class="rain-pill" data-hours="4">4h</button>
+            <button class="rain-pill" data-hours="24">1 day</button>
+            <button class="rain-pill" data-hours="168">1 week</button>
+          </div>
+          <span id="rain-status" aria-live="polite"></span>
+        </div>
+
+        <!-- Rainfall map -->
+        <div id="rain-map" role="region" aria-label="Rainfall map"></div>
+
+      </div><!-- /#rain-panel -->
 
     </div><!-- /#app -->
 
