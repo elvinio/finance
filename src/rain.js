@@ -6,7 +6,7 @@
 import L from "leaflet";
 
 const RAIN_API = "https://api.data.gov.sg/v1/environment/rainfall";
-const DEFAULT_HOURS = 4;
+const DEFAULT_HOURS = 1;
 const REFRESH_MS = 5 * 60 * 1000; // 5 minutes
 
 let _map = null;
@@ -41,10 +41,13 @@ async function loadRainfall(hours) {
   const now = new Date();
   const cutoff = new Date(now - hours * 3600 * 1000);
 
-  const dates = [toDateStr(now)];
-  if (toDateStr(cutoff) !== toDateStr(now)) dates.unshift(toDateStr(cutoff));
+  const dates = new Set();
+  for (let d = new Date(cutoff); d <= now; d.setDate(d.getDate() + 1)) {
+    dates.add(toDateStr(new Date(d)));
+  }
+  dates.add(toDateStr(now));
 
-  const results = await Promise.all(dates.map(fetchDay));
+  const results = await Promise.all([...dates].map(fetchDay));
 
   const stations = {};
   const totals = {};
