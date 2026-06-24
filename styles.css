@@ -196,6 +196,124 @@ html, body {
   outline: none;
 }
 
+/* ---- Tab bar ---- */
+#tab-bar {
+  display: flex;
+  flex-shrink: 0;
+  background: #1a2a4a;
+  border-bottom: 1px solid #0d1a35;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+
+.tab-btn[aria-selected="true"] {
+  color: #fff;
+  border-bottom-color: #4fa3e0;
+}
+
+.tab-btn:focus-visible {
+  outline: 3px solid #4fa3e0;
+  outline-offset: -3px;
+}
+
+/* ---- Map panel ---- */
+#map-panel {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#map-panel.hidden {
+  display: none !important;
+}
+
+/* ---- Rain panel ---- */
+#rain-panel {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#rain-panel.hidden {
+  display: none !important;
+}
+
+/* ---- Rain controls ---- */
+#rain-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid #dce3ec;
+  flex-shrink: 0;
+}
+
+/* ---- Rain pills ---- */
+#rain-pills {
+  display: flex;
+  gap: 6px;
+}
+
+.rain-pill {
+  padding: 5px 14px;
+  border: 1px solid #c8d0dc;
+  border-radius: 16px;
+  background: #f4f6f9;
+  color: #444;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 32px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.rain-pill.active {
+  background: #2c3e6b;
+  border-color: #2c3e6b;
+  color: #fff;
+}
+
+.rain-pill:hover:not(.active) {
+  background: #e2e8f4;
+  border-color: #2c3e6b;
+}
+
+.rain-pill:focus-visible {
+  outline: 3px solid #4fa3e0;
+  outline-offset: 2px;
+}
+
+/* ---- Rain status text ---- */
+#rain-status {
+  font-size: 0.78rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+/* ---- Rain map ---- */
+#rain-map {
+  flex: 1 1 0;
+  min-height: 0;
+  z-index: 1;
+}
+
 /* ---- Map ---- */
 #map {
   flex: 1 1 0;
@@ -535,10 +653,8 @@ html, body {
 
 /* ---- Large screen (>= 1024px): side-by-side layout ---- */
 @media (min-width: 1024px) {
-  #main-content {
-    display: flex;
-    flex: 1 1 0;
-    overflow: hidden;
+  #map-panel {
+    flex-direction: row;
   }
 
   #map {

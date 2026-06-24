@@ -8,6 +8,7 @@ import { renderTable } from "./table.js";
 import { loadAllProjects, USE_MOCK } from "./lib/uraClient.js";
 import { makeFilterPredicate } from "./lib/transactions.js";
 import { initDebugPanel, debugLog, debugSetStatus } from "./debug.js";
+import { initRainTab, invalidateRainMap } from "./rain.js";
 
 // ---------------------------------------------------------------------------
 // Debug panel (init before anything else so early logs are captured)
@@ -302,6 +303,40 @@ function _makeInput(type, placeholder) {
   input.className = "filter-input";
   return input;
 }
+
+// ---------------------------------------------------------------------------
+// Tab switching
+// ---------------------------------------------------------------------------
+const tabMapBtn  = document.getElementById("tab-map");
+const tabRainBtn = document.getElementById("tab-rain");
+const mapPanel   = document.getElementById("map-panel");
+const rainPanel  = document.getElementById("rain-panel");
+
+let _rainInitialized = false;
+
+function switchTab(tab) {
+  if (tab === "rain") {
+    tabMapBtn.setAttribute("aria-selected", "false");
+    tabRainBtn.setAttribute("aria-selected", "true");
+    mapPanel.classList.add("hidden");
+    rainPanel.classList.remove("hidden");
+    if (!_rainInitialized) {
+      initRainTab();
+      _rainInitialized = true;
+    }
+    // Leaflet needs a size hint after the panel becomes visible
+    requestAnimationFrame(() => invalidateRainMap());
+  } else {
+    tabMapBtn.setAttribute("aria-selected", "true");
+    tabRainBtn.setAttribute("aria-selected", "false");
+    rainPanel.classList.add("hidden");
+    mapPanel.classList.remove("hidden");
+    requestAnimationFrame(() => map.invalidateSize());
+  }
+}
+
+if (tabMapBtn)  tabMapBtn.addEventListener("click",  () => switchTab("map"));
+if (tabRainBtn) tabRainBtn.addEventListener("click", () => switchTab("rain"));
 
 // ---------------------------------------------------------------------------
 // Collapsible filter bar toggle

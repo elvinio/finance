@@ -6,7 +6,7 @@
 // cache-first network fallback, so the app works fully offline after the
 // initial load when all CDN assets have been fetched at least once.
 
-const CACHE_VERSION = "sgcondo-v1";
+const CACHE_VERSION = "sgcondo-v2";
 const TILE_CACHE = "sgcondo-tiles-v1";
 const TILE_CAP = 500; // max tile entries before evicting oldest
 
@@ -19,6 +19,7 @@ const APP_SHELL = [
   "./src/main.js",
   "./src/map.js",
   "./src/table.js",
+  "./src/rain.js",
   "./src/lib/svy21.js",
   "./src/lib/transactions.js",
   "./src/lib/uraClient.js",
