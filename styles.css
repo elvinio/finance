@@ -651,6 +651,118 @@ html, body {
 .dl-warn    { color: #d29922; }
 .dl-error   { color: #f85149; }
 
+/* ---- Print controls (shown only on screen inside the table header) ---- */
+.table-print-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.print-margin-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.print-margin-select {
+  padding: 4px 8px;
+  border: 1px solid #c8d0dc;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #1a1a2e;
+  background: #f9fafb;
+  cursor: pointer;
+  min-height: 32px;
+}
+
+.print-margin-select:focus {
+  outline: none;
+  border-color: #2980b9;
+}
+
+.btn-print {
+  padding: 5px 14px;
+  border: 1px solid #2c3e6b;
+  border-radius: 4px;
+  background: #2c3e6b;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 32px;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-print:hover,
+.btn-print:focus-visible {
+  background: #1a2a4a;
+  border-color: #1a2a4a;
+  outline: none;
+}
+
+/* ---- Print media ---- */
+@media print {
+  .no-print,
+  #filters,
+  #tab-bar,
+  #map,
+  #rain-panel,
+  #progress,
+  #banner,
+  #debug-fab,
+  #debug-panel {
+    display: none !important;
+  }
+
+  #app {
+    height: auto;
+    overflow: visible;
+  }
+
+  #map-panel {
+    display: block;
+    overflow: visible;
+  }
+
+  #table {
+    max-height: none;
+    overflow: visible;
+    border: none;
+    display: block;
+  }
+
+  .table-header {
+    position: static;
+  }
+
+  .table-wrapper {
+    overflow: visible;
+  }
+
+  .txn-table th {
+    position: static;
+    background: #eee;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 10pt;
+  }
+
+  .txn-table {
+    font-size: 9pt;
+  }
+}
+
 /* ---- Large screen (>= 1024px): side-by-side layout ---- */
 @media (min-width: 1024px) {
   #map-panel {
