@@ -6,6 +6,27 @@
 let _sortCol = "date";
 let _sortDir = -1; // -1 = descending, 1 = ascending
 
+/** Currently selected print margin in cm. */
+let _printMarginCm = "1";
+
+const PRINT_MARGINS = [
+  { label: "0.5 cm", value: "0.5" },
+  { label: "0.75 cm", value: "0.75" },
+  { label: "1 cm", value: "1" },
+  { label: "1.5 cm", value: "1.5" },
+  { label: "2 cm", value: "2" },
+];
+
+function applyPrintMargin(cm) {
+  let el = document.getElementById("_print-page-margin");
+  if (!el) {
+    el = document.createElement("style");
+    el.id = "_print-page-margin";
+    document.head.appendChild(el);
+  }
+  el.textContent = `@page { margin: ${cm}cm; }`;
+}
+
 /** Column definitions: key in transaction object, display header label, formatter. */
 const COLUMNS = [
   {
@@ -93,13 +114,29 @@ export function renderTable(containerEl, project, filterPredicate) {
   // ---- Project header ----
   const header = document.createElement("div");
   header.className = "table-header";
+  const marginOptions = PRINT_MARGINS
+    .map(m => `<option value="${m.value}"${m.value === _printMarginCm ? " selected" : ""}>${m.label}</option>`)
+    .join("");
   header.innerHTML =
     `<h2 class="table-project-name">${escapeHtml(project.name)}</h2>` +
     `<div class="table-project-meta">` +
     `<span class="badge badge-segment">${escapeHtml(project.marketSegment)}</span>` +
     `<span class="table-meta-psf">Median PSF: <strong>$${Math.round(project.medianPsf).toLocaleString()}</strong></span>` +
+    `</div>` +
+    `<div class="table-print-controls no-print">` +
+    `<label class="print-margin-label" for="print-margin-select">Margin</label>` +
+    `<select id="print-margin-select" class="print-margin-select" aria-label="Print margin">${marginOptions}</select>` +
+    `<button class="btn-print" type="button">Print</button>` +
     `</div>`;
   containerEl.appendChild(header);
+
+  containerEl.querySelector("#print-margin-select").addEventListener("change", (e) => {
+    _printMarginCm = e.target.value;
+  });
+  containerEl.querySelector(".btn-print").addEventListener("click", () => {
+    applyPrintMargin(_printMarginCm);
+    window.print();
+  });
 
   // ---- Filter transactions ----
   const rows = (project.transactions || []).filter(filterPredicate);
